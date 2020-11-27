@@ -1,0 +1,27 @@
+{
+  "name": "electron-auto-updater",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build-win": "electron-builder build --win --publish never",
+    "deploy-win": "electron-builder build --win --publish always",
+    "build-mac": "electron-builder build --mac --publish never",
+    "deploy-mac": "electron-builder build --mac --publish always"
+  
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^11.0.3",
+    "electron-builder": "^22.9.1"
+  },
+  "dependencies": {
+    "electron-updater": "^4.3.5"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/MartinBarker/electron-auto-updater.git"
+  }
+}
