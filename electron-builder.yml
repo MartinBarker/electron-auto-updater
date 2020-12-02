@@ -1,0 +1,5 @@
+appId: com.example.ElectronAutoUpdate
+publish:
+  provider: github
+  token: process.env.GHTOKEN
+
