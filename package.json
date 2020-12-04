@@ -1,11 +1,13 @@
 {
   "name": "electron-auto-updater",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "build-win": "electron-builder build --win --publish never",
     "build": "electron-builder build --mac --win --publish never",
+    "deploy-win": "electron-builder build --win --publish always",
     "deploy": "electron-builder build --mac --win --publish always"
   },
   "build": {
