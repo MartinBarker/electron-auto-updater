@@ -1,7 +1,7 @@
 {
   "name": "electron-auto-updater",
   "version": "1.0.2",
-  "description": "",
+  "description": "app that does stuff",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -40,7 +40,7 @@
       "icon": "build/icon.png"
     }
   },
-  "author": "",
+  "author": "martinbarker",
   "license": "ISC",
   "devDependencies": {
     "electron": "^11.0.3",
