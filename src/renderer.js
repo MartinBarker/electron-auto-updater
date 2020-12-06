@@ -11,7 +11,7 @@ document.onreadystatechange = (event) => {
     if (document.readyState == "complete") {
         handleWindowControls();
 
-        document.getElementById('electron-ver').innerHTML = `${process.versions.electron}`
+        //document.getElementById('electron-ver').innerHTML = `${process.versions.electron}`
     }
 };
 
