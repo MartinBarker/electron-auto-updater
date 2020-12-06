@@ -8,10 +8,13 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    frame: false,
+    backgroundColor: '#FFF',
     webPreferences: {
-      nodeIntegration: true,
-    },
-  });
+      nodeIntegration: true, 
+      enableRemoteModule: true
+  }
+});
   mainWindow.loadFile('index.html');
   mainWindow.on('closed', function () {
     mainWindow = null;
