@@ -6,7 +6,7 @@ html, body {height: 100%; margin: 0;}
 
 body {
   font-family: "Segoe UI", sans-serif;
-  background: #1A2933;
+  background: rgb(119,136,112);
   color: #FFF;
 }
 
@@ -18,16 +18,18 @@ h1 {
 
 p {
   margin-top: 10px;
-  color: rgba(255,255,255,0.4);
+  color: white;
 }
 
 /* Styling of window frame and titlebar */
 body {
-  border: 1px solid #48545c;
+  border: 1px solid rgb(87, 87, 77); 
   overflow-y: hidden;
 }
 
 #titlebar {
+  background:rgb(87, 87, 77); 
+  color: black; 
   display: block;
   position: fixed;
   height: 32px;
