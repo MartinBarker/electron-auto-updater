@@ -1,6 +1,6 @@
 {
   "name": "electron-auto-updater",
-  "version": "1.0.4",
+  "version": "1.0.9",
   "description": "app that does stuff",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "build-win": "electron-builder build --win --publish never",
     "build": "electron-builder build --mac --win --publish never",
     "deploy-win": "electron-builder build --win --publish always",
-    "deploy": "electron-builder build --mac --win --publish always"
+    "deploy": "electron-builder build --linux --mac --win --publish always"
   },
   "build": {
     "appId": "yourAppId",
@@ -39,7 +39,7 @@
       "icon": "build/icon.png"
     }
   },
-  "author": "martinbarker",
+  "author": "Martin Barker <martinbarker99@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "electron": "^11.0.3",
