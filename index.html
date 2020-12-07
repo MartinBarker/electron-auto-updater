@@ -54,18 +54,76 @@
     </div>
   </header>
 
-  <!-- program main contents -->
-  <div id="main">
+  <!-- sidebar html-->
+  <div class="grid-container" style='padding-top: 30px'>
+    <div class="sidebar">
+      <button id='sidebarButton'> 
+        >
+      </button>
+    </div>
+    <div class="main-content" style='padding-left:40px; padding-top:10px;'>
+      <!-- version info -->
+      <p id="version"></p>
 
-    <!-- version info -->
-    <p id="version"></p>
-
-    <!-- new upload button -->
-    <a style='cursor: pointer;' type="button" data-toggle="modal" data-target="#uploadModal" class="button1">New Upload</a>
-    
-
-
+      <!-- new upload button -->
+      <a style='cursor: pointer; margin-right:10px;' type="button" data-toggle="modal" data-target="#uploadModal" class="button1">New Upload</a>
+    </div>
   </div>
+  <!-- sidebar style -->
+  <style>
+    .grid-container {
+      /*
+      width: 90vw;
+      margin: 0 auto;
+      */
+      height: 100%;
+      display: flex;
+      /* 
+      border: 2px solid rgba(0, 0, 0, .4);
+      */
+      transition: 1s ease;
+    }
+    .sidebar {
+      width: 25%;
+      height: 100%;
+      background-color: rgb(136, 136, 136);
+      transition: 1s ease;
+      position: relative;
+    }
+    .main-content {
+      width: 100%;
+      height: 100%;
+      background-color: rgb(41 43 40);
+      transition: 1s ease;
+    }
+    .main-content_large {
+      width: 100%;
+    }
+    .sidebar_small {
+      width: 0%;
+    }
+    #sidebarButton {
+      position: absolute;
+      border: none;
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      box-shadow: 0px 1px 4px 1px rgba(0 ,0, 0, .3);
+      left: 100%;
+      top: 2rem;
+      transform: translateX(-50%);
+      cursor: pointer;
+    }
+  </style>
+  <!-- sidebar script -->
+  <script>
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    document.querySelector('#sidebarButton').onclick = function () {
+      sidebar.classList.toggle('sidebar_small');
+      mainContent.classList.toggle('main-content_large')
+    }
+  </script>
 
   <script>
     require('./src/renderer.js');
@@ -103,7 +161,7 @@
   </script>
 
   <!-- new upload modal -->
-  <div class="modal" id="uploadModal"  style="padding-top:35px;">
+  <div class="modal" id="uploadModal" style="padding-top:35px;">
     <div class="modal-dialog">
       <div class="modal-content" id='newUploadFilesInput'>
 
@@ -114,10 +172,10 @@
         </div>
 
         <!-- Modal body -->
-        <div class="modal-body">   
-          
-            <!-- datatable of audio/img files -->
-            <table id="example" class="table table-striped table-bordered" style="width:100%"></table>
+        <div class="modal-body">
+
+          <!-- datatable of audio/img files -->
+          <table id="example" class="table table-striped table-bordered" style="width:100%"></table>
           <!--
           <table id="example" class="table table-striped table-bordered" style="width:100%">
             <thead>
@@ -135,22 +193,23 @@
 
 
 
-            <form >
-              <div>Upload multiple files by dragging them into this box or <label style='display: inline-block;' class="uploadbutton" for="fileElem">Choose Files</label> </div>
-              <input type="file" id="fileElem" multiple onchange="handleFiles(this.files)">
-              <div id="gallery"></div>
-            </form>
-          
-            <div id='newUploadFilesDisplay'>
+          <form>
+            <div>Upload multiple files by dragging them into this box or <label style='display: inline-block;'
+                class="uploadbutton" for="fileElem">Choose Files</label> </div>
+            <input type="file" id="fileElem" multiple onchange="handleFiles(this.files)">
+            <div id="gallery"></div>
+          </form>
 
-            </div>
+          <div id='newUploadFilesDisplay'>
+
+          </div>
 
         </div>
 
         <!-- Modal footer -->
         <div class="modal-footer">
           <button style='display:inline' type="button" class="float-right btn btn-danger"
-          data-dismiss="modal">Cancel</button>
+            data-dismiss="modal">Cancel</button>
 
           <button style='display:inline' id='createUploadButton' type="button" class="float-left btn btn-success"
             data-dismiss="modal"
