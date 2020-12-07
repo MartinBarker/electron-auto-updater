@@ -1,16 +1,8 @@
-let dropArea = document.getElementById('drop-area');
 
-//progress bar setup
-let uploadProgress = []
-let filesDone = 0
-let filesToDo = 0
-let progressBar = document.getElementById('progress-bar')
-
-console.log('dropArea=', dropArea)
-    ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false)
-    })
-
+let dropArea = document.getElementById('newUploadFilesInput');
+;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false)
+})
 function preventDefaults(e) {
     e.preventDefault()
     e.stopPropagation()
@@ -19,15 +11,12 @@ function preventDefaults(e) {
 ;['dragenter', 'dragover'].forEach(eventName => {
     dropArea.addEventListener(eventName, highlight, false)
 })
-
-    ;['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, unhighlight, false)
-    })
-
 function highlight(e) {
     dropArea.classList.add('highlight')
 }
-
+;['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false)
+})
 function unhighlight(e) {
     dropArea.classList.remove('highlight')
 }
@@ -39,13 +28,29 @@ function handleDrop(e) {
     let dt = e.dataTransfer
     let files = dt.files
     handleFiles(files)
+    //([...files]).forEach(previewFile)
 }
 
 function handleFiles(files) {
-    //add preview for each file
-    ([...files]).forEach(previewFile)
+    console.log('handleFiles() ', files)
+    for (var fileNum = 0; fileNum < files.length; fileNum++ ) {
+        console.log('fileNum=', fileNum)
+        console.log('files[fileNum]=', files[fileNum])
+        document.getElementById('newUploadFilesDisplay').innerHTML = 
+        `
+        ${document.getElementById('newUploadFilesDisplay').innerHTML} 
+        <br> 
+        ${files[fileNum].name}
+        `;
+      }
+
 }
 
+$('#uploadModal').on('hidden.bs.modal', function (e) {
+    document.getElementById('newUploadFilesDisplay').innerHTML = "";
+  })
+
+/*
 function previewFile(file) {
     let reader = new FileReader()
     reader.readAsDataURL(file)
@@ -55,4 +60,5 @@ function previewFile(file) {
         document.getElementById('gallery').appendChild(img)
     }
 }
+*/
 

@@ -57,14 +57,7 @@
   <div id="main">
     <p id="version"></p>
     <button style='cursor: pointer;' type="button" data-toggle="modal" data-target="#uploadModal">New Upload</button>
-    <div id="drop-area">
-      <form class="my-form">
-        <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
-        <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
-        <label class="uploadbutton" for="fileElem">Select some files</label>
-        <div id="gallery"></div>
-      </form>
-    </div>
+    
 
   </div>
 
@@ -119,34 +112,25 @@
         </div>
 
         <!-- Modal body -->
-        <div class="modal-body">
-          <div id='modalUploadTitle'>
-            <h5>Upload Title: <input type="text" placeholder="(optional)" id="modalUploadTitleInput" name="lname"></h5>
-
-            <br>
-            <h6 id='loadingFilesSpinner' style='display:none'>
-              <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-              Loading Files...
-            </h6>
-            <h5><i class="fa fa-upload" aria-hidden="true"></i> Drag files into this window or <input
-                id='newUploadFileSelection' type="file" name="filefield" multiple="multiple"></h5>
-
-            <strong>Image Files: </strong>
-            <div id='newUploadImageFileList'>
-
-            </div>
-            <br>
-            <strong>Audio Files: </strong>
-            <div id='newUploadAudioFileList'>
+        <div class="modal-body">       
+            <form >
+              <div>Upload multiple files by dragging them into this box or <label style='display: inline-block;' class="uploadbutton" for="fileElem">Choose Files</label> </div>
+              <input type="file" id="fileElem" multiple onchange="handleFiles(this.files)">
+              <div id="gallery"></div>
+            </form>
+          
+            <div id='newUploadFilesDisplay'>
 
             </div>
 
-          </div>
         </div>
 
         <!-- Modal footer -->
         <div class="modal-footer">
-          <button style='display:inline' id='createUploadButton' type="button" class="float-left btn btn-primary"
+          <button style='display:inline' type="button" class="float-right btn btn-danger"
+          data-dismiss="modal">Cancel</button>
+
+          <button style='display:inline' id='createUploadButton' type="button" class="float-left btn btn-success"
             data-dismiss="modal"
             onclick="addNewUpload(document.getElementById('modalUploadTitleInput').value)">Create</button>
 
