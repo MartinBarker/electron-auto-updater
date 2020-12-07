@@ -15,6 +15,9 @@ function createWindow () {
       enableRemoteModule: true
   }
 });
+  //Open the DevTools. 
+  mainWindow.webContents.openDevTools() 
+  
   mainWindow.loadFile('index.html');
   mainWindow.on('closed', function () {
     mainWindow = null;
