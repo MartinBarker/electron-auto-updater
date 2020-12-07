@@ -1,8 +1,15 @@
 let dropArea = document.getElementById('drop-area');
+
+//progress bar setup
+let uploadProgress = []
+let filesDone = 0
+let filesToDo = 0
+let progressBar = document.getElementById('progress-bar')
+
 console.log('dropArea=', dropArea)
-;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropArea.addEventListener(eventName, preventDefaults, false)
-})
+    ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false)
+    })
 
 function preventDefaults(e) {
     e.preventDefault()
@@ -29,9 +36,23 @@ function unhighlight(e) {
 dropArea.addEventListener('drop', handleDrop, false)
 
 function handleDrop(e) {
-  let dt = e.dataTransfer
-  let files = dt.files
+    let dt = e.dataTransfer
+    let files = dt.files
+    handleFiles(files)
+}
 
-  console.log('drop event: files=', files)
+function handleFiles(files) {
+    //add preview for each file
+    ([...files]).forEach(previewFile)
+}
+
+function previewFile(file) {
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = function () {
+        let img = document.createElement('img')
+        img.src = reader.result
+        document.getElementById('gallery').appendChild(img)
+    }
 }
 
