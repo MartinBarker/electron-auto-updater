@@ -15,10 +15,11 @@ function createWindow () {
       enableRemoteModule: true
   }
 });
-  //Open the DevTools. 
+  mainWindow.loadFile('ex.html');//('index.html');
+  
+  // Open the DevTools. 
   mainWindow.webContents.openDevTools() 
   
-  mainWindow.loadFile('index.html');
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
@@ -33,9 +34,9 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') {
+  //if (process.platform !== 'darwin') {
     app.quit();
-  }
+  //}
 });
 
 app.on('activate', function () {

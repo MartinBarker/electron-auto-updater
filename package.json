@@ -1,7 +1,7 @@
 {
-  "name": "digify",
-  "version": "1.0.10",
-  "description": "Render video files by combining image(s) and music.",
+  "name": "electron-auto-updater",
+  "version": "1.0.22",
+  "description": "app that does stuff",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -11,7 +11,7 @@
     "deploy": "electron-builder build --linux --mac --win --publish always"
   },
   "build": {
-    "appId": "digify",
+    "appId": "yourAppId",
     "afterSign": "scripts/notarize.js",
     "mac": {
       "icon": "build/icon.png",
@@ -28,7 +28,7 @@
       "sign": false
     },
     "linux": {
-      "category": "media",
+      "category": "TODO: fill here the category of your app",
       "icon": "build/icon.png",
       "target": [
         "AppImage",
