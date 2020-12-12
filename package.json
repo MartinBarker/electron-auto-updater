@@ -1,6 +1,6 @@
 {
   "name": "electron-auto-updater",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "app that does stuff",
   "main": "main.js",
   "scripts": {
@@ -11,6 +11,11 @@
     "deploy": "electron-builder build --linux --mac --win --publish always"
   },
   "build": {
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/bin/${os}/${arch}/ffmpeg",
+      "node_modules/ffmpeg-static/index.js",
+      "node_modules/ffmpeg-static/package.json"
+    ],
     "appId": "yourAppId",
     "afterSign": "scripts/notarize.js",
     "mac": {
@@ -47,6 +52,11 @@
     "electron-notarize": "^1.0.0"
   },
   "dependencies": {
+    "ffmpeg-static": "^4.2.7",
+    "ffmpeg-static-electron": "^2.0.1",
+    "ffprobe-static": "^3.0.0",
+    "ffprobe-static-electron": "^2.0.0",
+    "fluent-ffmpeg": "^2.1.2",
     "bootstrap": "^4.5.3",
     "dotenv": "^8.2.0",
     "electron-updater": "^4.3.5",

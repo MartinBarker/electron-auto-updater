@@ -1,37 +1,120 @@
-$(document).keyup(function(e) {
-    if (e.key === "Escape") { 
-        if($('#uploadModal').is(':visible')){
-           $('#uploadModal').modal('toggle');
+var os = require('os');
+var path = require('path');
+
+async function ffmpegTest() {
+    console.log('path.sep = ', path.sep)
+    let audioPath1 = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\FLAC The Hard Workers ‎– Hola! Hola!\\The Hard Workers - A1 - Heroes Welcome.flac";
+    let audioPath2 = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\MP3 (&(&#(yh(sd\\14 - Maw!.mp3"
+    let imgPath = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\FLAC The Hard Workers ‎– Hola! Hola!\\cover.jpg";
+    let vidFolderPath = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\FLAC The Hard Workers ‎– Hola! Hola!";
+    let vidTitle = "my awesome title"
+    let vidFileFormat = "mp4";
+    //let resolutionOptions = (await getResolutionOptions(imgPath))[3];//resolutionOptions = ["450x820", "2232*2131", "2232*2131", "2232*2131"]
+    let resolution = "1920x1080";
+    let padding = null;
+    let backgroundImg = null;
+    let vidOutput = `${vidFolderPath}${path.sep}${vidTitle}.${vidFileFormat}`;
+    generateVid(audioPath2, imgPath, vidOutput, resolution, padding, backgroundImg, null)
+
+};
+
+//generate video using image and audio
+async function generateVid(audioPath, imgPath, vidOutput, resolution, padding, backgroundImg, updateInfoLocation) {
+    return new Promise(async function (resolve, reject) {
+
+        console.log(`generateVid() 
+        \n audioPath = ${audioPath}
+        \n imgPath = ${imgPath}
+        \n vidOutput = ${vidOutput}
+        \n resolution = ${resolution}
+        \n padding = ${padding}
+        \n backgroundImg = ${backgroundImg}
+        \n updateInfoLocation = ${updateInfoLocation}`)
+
+        if (updateInfoLocation) {
+            console.log('updateInfoLocation found')
+            document.getElementById(updateInfoLocation).innerText = `Generating Video: 0%`
         }
-       
-   }
-});
-$(document).ready(function () {
-    
-    /*
-    $('#example').dataTable({
-        "processing": true, // control the processing indicator.
-        "serverSide": true, // recommended to use serverSide when data is more than 10000 rows for performance reasons
-        "info": true,   // control table information display field
-        "stateSave": true,  //restore table state on page reload,
-        "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],    // use the first inner array as the page length values and the second inner array as the displayed options
-        "ajax":{
-            "url": "@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))/Home/AjaxGetJsonData",
-            "type": "GET"
-        },
-        "columns": [
-            { "data": "Name", "orderable" : true },
-            { "data": "Age", "orderable": false },
-            { "data": "DoB", "orderable": true },
-            {
-                "render": function (data, type, JsonResultRow, meta) {
-                    return '<img src="Content/'+JsonResultRow.ImageAddress+'">';
+
+
+        //begin get ffmpeg info
+        const ffmpeg = require('fluent-ffmpeg');
+        //Get the paths to the packaged versions of the binaries we want to use
+        var ffmpegPath = require('ffmpeg-static-electron').path;
+        ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked')
+        var ffprobePath = require('ffprobe-static-electron').path;
+        ffprobePath = ffprobePath.replace('app.asar', 'app.asar.unpacked')
+        //tell the ffmpeg package where it can find the needed binaries.
+        ffmpeg.setFfmpegPath(ffmpegPath);
+        ffmpeg.setFfprobePath(ffprobePath);
+        //end set ffmpeg info
+
+
+
+        ffmpeg()
+            .input(imgPath)
+            .loop()
+            .addInputOption('-framerate 2')
+            .input(audioPath)
+            .videoCodec('libx264')
+            .audioCodec('copy')
+            .audioBitrate('320k')
+            .videoBitrate('8000k', true)
+            .outputOptions([
+                '-preset medium',
+                '-tune stillimage',
+                '-crf 18',
+                '-pix_fmt yuv420p',
+                '-shortest'
+            ])
+            .size(resolution)
+            //.autopad(padding)
+            .on('progress', function (progress) {
+                if (progress.percent) {
+                    if (updateInfoLocation) {
+                        document.getElementById(updateInfoLocation).innerText = `Generating Video: ${Math.round(progress.percent)}%`
+                    }
+                } else {
+                    if (updateInfoLocation) {
+                        document.getElementById(updateInfoLocation).innerText = `Generating Video...`
+                    }
                 }
-            }
-        ],
-        "order": [[0, "asc"]]
-    });
-    */
+                console.info(`vid() Processing : ${progress.percent} % done`);
+            })
+            .on('codecData', function (data) {
+                console.log('vid() codecData=', data);
+            })
+            .on('end', function () {
+                if (updateInfoLocation) {
+                    document.getElementById(updateInfoLocation).innerText = `Video generated.`
+                }
+                console.log('vid()  file has been converted succesfully; resolve() promise');
+                //resolve();
+            })
+            .on('error', function (err) {
+                if (updateInfoLocation) {
+                    document.getElementById(updateInfoLocation).innerText = `Error generating video.`
+                }
+                console.log('vid() an error happened: ' + err.message, ', reject()');
+                //reject(err);
+            })
+            .output(vidOutput)
+            .run();
+
+    })
+}
+
+$(document).ready(function () {
+    ffmpegTest();
+});
+
+$(document).keyup(function (e) {
+    if (e.key === "Escape") {
+        if ($('#uploadModal').is(':visible')) {
+            $('#uploadModal').modal('toggle');
+        }
+
+    }
 });
 
 let dropArea = document.getElementById('newUploadFilesInput');
@@ -68,21 +151,21 @@ function handleDrop(e) {
 
 function handleFiles(files) {
     console.log('handleFiles() ', files)
-    for (var fileNum = 0; fileNum < files.length; fileNum++ ) {
+    for (var fileNum = 0; fileNum < files.length; fileNum++) {
         console.log('file = ', files[fileNum])
-        document.getElementById('newUploadFilesDisplay').innerHTML = 
-        `
+        document.getElementById('newUploadFilesDisplay').innerHTML =
+            `
         ${document.getElementById('newUploadFilesDisplay').innerHTML} 
         <br> 
         ${files[fileNum].name}
         `;
-      }
+    }
 
 }
 
 $('#uploadModal').on('hidden.bs.modal', function (e) {
     document.getElementById('newUploadFilesDisplay').innerHTML = "";
-  })
+})
 
 /*
 function previewFile(file) {
