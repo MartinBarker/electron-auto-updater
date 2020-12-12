@@ -52,13 +52,14 @@
     "electron-notarize": "^1.0.0"
   },
   "dependencies": {
-    "bootstrap": "^4.5.3",
-    "dotenv": "^8.2.0",
-    "electron-updater": "^4.3.5",
     "ffmpeg-static": "^4.2.7",
     "ffmpeg-static-electron": "^2.0.1",
     "ffprobe-static": "^3.0.0",
-    "fluent-ffmpeg": "^2.0.0-rc1",
+    "ffprobe-static-electron": "^2.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "bootstrap": "^4.5.3",
+    "dotenv": "^8.2.0",
+    "electron-updater": "^4.3.5",
     "jquery": "^3.5.1",
     "popper.js": "^1.16.1"
   },

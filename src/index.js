@@ -1,19 +1,20 @@
 var os = require('os');
+var path = require('path');
 
-async function ffmpegTest(){
-    
-    let audioPath = "/Users/martinbarker/Documents/testfiles/The Hard Workers – Hola! Hola!/The Hard Workers - A1 - Heroes Welcome.flac";
-    let imgPath = "/Users/martinbarker/Documents/testfiles/The Hard Workers – Hola! Hola!/EovlJgFVEAAVL5z.jpg";
-    let vidFolderPath = "/Users/martinbarker/Documents/testfiles/";
+async function ffmpegTest() {
+    console.log('path.sep = ', path.sep)
+    let audioPath1 = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\FLAC The Hard Workers ‎– Hola! Hola!\\The Hard Workers - A1 - Heroes Welcome.flac";
+    let audioPath2 = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\MP3 (&(&#(yh(sd\\14 - Maw!.mp3"
+    let imgPath = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\FLAC The Hard Workers ‎– Hola! Hola!\\cover.jpg";
+    let vidFolderPath = "C:\\Users\\marti\\Documents\\projects\\electron-auto-updater-test\\FLAC The Hard Workers ‎– Hola! Hola!";
     let vidTitle = "my awesome title"
     let vidFileFormat = "mp4";
     //let resolutionOptions = (await getResolutionOptions(imgPath))[3];//resolutionOptions = ["450x820", "2232*2131", "2232*2131", "2232*2131"]
     let resolution = "1920x1080";
     let padding = null;
     let backgroundImg = null;
-    var path = require('path');
     let vidOutput = `${vidFolderPath}${path.sep}${vidTitle}.${vidFileFormat}`;
-    generateVid(audioPath, imgPath, vidOutput, resolution, padding, backgroundImg, null)
+    generateVid(audioPath2, imgPath, vidOutput, resolution, padding, backgroundImg, null)
 
 };
 
@@ -21,32 +22,36 @@ async function ffmpegTest(){
 async function generateVid(audioPath, imgPath, vidOutput, resolution, padding, backgroundImg, updateInfoLocation) {
     return new Promise(async function (resolve, reject) {
 
-        console.log('os.platform() = ', os.platform());
-        console.log('generateVid audioPath = ', audioPath, '\n imgPath = ', imgPath, '\n vidOutput = ', vidOutput)
-        if(updateInfoLocation){
+        console.log(`generateVid() 
+        \n audioPath = ${audioPath}
+        \n imgPath = ${imgPath}
+        \n vidOutput = ${vidOutput}
+        \n resolution = ${resolution}
+        \n padding = ${padding}
+        \n backgroundImg = ${backgroundImg}
+        \n updateInfoLocation = ${updateInfoLocation}`)
+
+        if (updateInfoLocation) {
             console.log('updateInfoLocation found')
             document.getElementById(updateInfoLocation).innerText = `Generating Video: 0%`
         }
 
-        try{
-            //begin get ffmpeg info
-            const ffmpeg = require('fluent-ffmpeg');
-            //Get the paths to the packaged versions of the binaries we want to use
-            var ffmpegPath = require('ffmpeg-static-electron').path;
-            ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked')
-            var ffprobePath = require('ffprobe-static-electron').path;
-            ffprobePath = ffprobePath.replace('app.asar', 'app.asar.unpacked')
-            //tell the ffmpeg package where it can find the needed binaries.
-            ffmpeg.setFfmpegPath(ffmpegPath);
-            ffmpeg.setFfprobePath(ffprobePath);
-            //end set ffmpeg info
-        }catch(err){
-            console.log('err=', err)
-        }
+
+        //begin get ffmpeg info
+        const ffmpeg = require('fluent-ffmpeg');
+        //Get the paths to the packaged versions of the binaries we want to use
+        var ffmpegPath = require('ffmpeg-static-electron').path;
+        ffmpegPath = ffmpegPath.replace('app.asar', 'app.asar.unpacked')
+        var ffprobePath = require('ffprobe-static-electron').path;
+        ffprobePath = ffprobePath.replace('app.asar', 'app.asar.unpacked')
+        //tell the ffmpeg package where it can find the needed binaries.
+        ffmpeg.setFfmpegPath(ffmpegPath);
+        ffmpeg.setFfprobePath(ffprobePath);
+        //end set ffmpeg info
 
 
-        /*
-        let cmd = ffmpeg()
+
+        ffmpeg()
             .input(imgPath)
             .loop()
             .addInputOption('-framerate 2')
@@ -62,20 +67,15 @@ async function generateVid(audioPath, imgPath, vidOutput, resolution, padding, b
                 '-pix_fmt yuv420p',
                 '-shortest'
             ])
-            .size(resolution);
-            
-            if(padding){
-                cmd.autopad(padding)
-            }
-
-            //add status updates to cmd
-            cmd.on('progress', function (progress) {
+            .size(resolution)
+            //.autopad(padding)
+            .on('progress', function (progress) {
                 if (progress.percent) {
-                    if(updateInfoLocation){
+                    if (updateInfoLocation) {
                         document.getElementById(updateInfoLocation).innerText = `Generating Video: ${Math.round(progress.percent)}%`
                     }
                 } else {
-                    if(updateInfoLocation){
+                    if (updateInfoLocation) {
                         document.getElementById(updateInfoLocation).innerText = `Generating Video...`
                     }
                 }
@@ -85,23 +85,22 @@ async function generateVid(audioPath, imgPath, vidOutput, resolution, padding, b
                 console.log('vid() codecData=', data);
             })
             .on('end', function () {
-                if(updateInfoLocation){
+                if (updateInfoLocation) {
                     document.getElementById(updateInfoLocation).innerText = `Video generated.`
                 }
                 console.log('vid()  file has been converted succesfully; resolve() promise');
-                resolve();
+                //resolve();
             })
             .on('error', function (err) {
-                if(updateInfoLocation){
+                if (updateInfoLocation) {
                     document.getElementById(updateInfoLocation).innerText = `Error generating video.`
                 }
                 console.log('vid() an error happened: ' + err.message, ', reject()');
-                reject(err);
+                //reject(err);
             })
-            
-            //run cmd
-            cmd.output(vidOutput).run()
-            */
+            .output(vidOutput)
+            .run();
+
     })
 }
 
@@ -109,13 +108,13 @@ $(document).ready(function () {
     ffmpegTest();
 });
 
-$(document).keyup(function(e) {
-    if (e.key === "Escape") { 
-        if($('#uploadModal').is(':visible')){
-           $('#uploadModal').modal('toggle');
+$(document).keyup(function (e) {
+    if (e.key === "Escape") {
+        if ($('#uploadModal').is(':visible')) {
+            $('#uploadModal').modal('toggle');
         }
-       
-   }
+
+    }
 });
 
 let dropArea = document.getElementById('newUploadFilesInput');
@@ -152,21 +151,21 @@ function handleDrop(e) {
 
 function handleFiles(files) {
     console.log('handleFiles() ', files)
-    for (var fileNum = 0; fileNum < files.length; fileNum++ ) {
+    for (var fileNum = 0; fileNum < files.length; fileNum++) {
         console.log('file = ', files[fileNum])
-        document.getElementById('newUploadFilesDisplay').innerHTML = 
-        `
+        document.getElementById('newUploadFilesDisplay').innerHTML =
+            `
         ${document.getElementById('newUploadFilesDisplay').innerHTML} 
         <br> 
         ${files[fileNum].name}
         `;
-      }
+    }
 
 }
 
 $('#uploadModal').on('hidden.bs.modal', function (e) {
     document.getElementById('newUploadFilesDisplay').innerHTML = "";
-  })
+})
 
 /*
 function previewFile(file) {
