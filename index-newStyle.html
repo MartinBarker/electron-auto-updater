@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>digify</title>
+  <!-- css 
+  <link rel="stylesheet" href="./src/style.css" /> -->
+  <link rel="stylesheet" href="./src/style2.css" />
+  <!-- jquery script 
+  <script>window.$ = window.jQuery = require('jquery');</script> -->
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="./src/bootstrap.min.css" />
+  <!-- font awesome -->
+  <link rel="stylesheet" href="./src/font-awesome/css/font-awesome.min.css">
+  <!-- Bootstrap Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script>let $ = require('jquery');</script>
+  <script>require('popper.js');</script>
+  <script>require('bootstrap');</script>
+</head>
+
+<body>
+  <!-- frameless window titlebar -->
+  <header style='z-index:2000 !important;' id="titlebar" > 
+    <div id="drag-region" >
+
+      <div id="window-title"  >
+        <span>Digify</span>
+      </div>
+
+      <div id="window-controls">
+
+        <div class="button" id="min-button">
+          <img class="icon"
+            srcset="./src/icons/min-w-10.png 1x,./src/icons/min-w-12.png 1.25x,./src/icons/min-w-15.png 1.5x,./src/icons/min-w-15.png 1.75x,./src/icons/min-w-20.png 2x,./src/icons/min-w-20.png 2.25x,./src/icons/min-w-24.png 2.5x,./src/icons/min-w-30.png 3x,./src/icons/min-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+        <div class="button" id="max-button">
+          <img class="icon"
+            srcset="./src/icons/max-w-10.png 1x,./src/icons/max-w-12.png 1.25x,./src/icons/max-w-15.png 1.5x,./src/icons/max-w-15.png 1.75x,./src/icons/max-w-20.png 2x,./src/icons/max-w-20.png 2.25x,./src/icons/max-w-24.png 2.5x,./src/icons/max-w-30.png 3x,./src/icons/max-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+        <div class="button" id="restore-button">
+          <img class="icon"
+            srcset="./src/icons/restore-w-10.png 1x,./src/icons/restore-w-12.png 1.25x,./src/icons/restore-w-15.png 1.5x,./src/icons/restore-w-15.png 1.75x,./src/icons/restore-w-20.png 2x,./src/icons/restore-w-20.png 2.25x,./src/icons/restore-w-24.png 2.5x,./src/icons/restore-w-30.png 3x,./src/icons/restore-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+        <div class="button" id="close-button">
+          <img class="icon"
+            srcset="./src/icons/close-w-10.png 1x,./src/icons/close-w-12.png 1.25x,./src/icons/close-w-15.png 1.5x,./src/icons/close-w-15.png 1.75x,./src/icons/close-w-20.png 2x,./src/icons/close-w-20.png 2.25x,./src/icons/close-w-24.png 2.5x,./src/icons/close-w-30.png 3x,./src/icons/close-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- main page content-->
+  <div id='main'>
+
+    <!-- sidebar -->
+    <div class="sidenav">
+      <a href="#Settings" onclick="changePage()"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> Settings</a>
+      <a href="#Record"><i class="fa fa-microphone fa-fw" aria-hidden="true"></i> Record</a>
+      <a href="#Render"><i class="fa fa-video-camera fa-fw" aria-hidden="true"></i> Render</a>
+      <a href="#Upload"><i class="fa fa-upload fa-fw" aria-hidden="true"></i> Upload</a>
+    </div>
+
+    <div class="main">
+      <h2>Sidebar Dropdown</h2>
+      <p id="version"></p>
+    </div>
+
+  </div>
+
+  <!-- auto update message popup -->
+  <div id="notification" class="hidden">
+    <p style="color:black;" id="message"></p>
+    <button id="close-button" onClick="closeNotification()">
+      Close
+    </button>
+    <button id="restart-button" onClick="restartApp()" class="hidden">
+      Restart
+    </button>
+  </div>
+
+  <!-- auto update script -->
+  <script>
+    require('./src/renderer.js');
+    const { ipcRenderer } = require('electron');
+    const version = document.getElementById('version');
+
+    ipcRenderer.send('app_version');
+    ipcRenderer.on('app_version', (event, arg) => {
+      ipcRenderer.removeAllListeners('app_version');
+      version.innerText = 'Version ' + arg.version;
+    });
+
+    function closeNotification() {
+      notification.classList.add('hidden');
+    }
+    function restartApp() {
+      ipcRenderer.send('restart_app');
+    }
+
+    const notification = document.getElementById('notification');
+    const message = document.getElementById('message');
+    const restartButton = document.getElementById('restart-button');
+    ipcRenderer.on('update_available', () => {
+      ipcRenderer.removeAllListeners('update_available');
+      message.innerText = 'A new update is available. Downloading now...';
+      notification.classList.remove('hidden');
+    });
+    ipcRenderer.on('update_downloaded', () => {
+      ipcRenderer.removeAllListeners('update_downloaded');
+      message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
+      restartButton.classList.remove('hidden');
+      notification.classList.remove('hidden');
+    });
+
+  </script>
+
+
+</body>
+
+</html>
