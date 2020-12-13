@@ -105,7 +105,7 @@ async function generateVid(audioPath, imgPath, vidOutput, resolution, padding, b
 }
 
 $(document).ready(function () {
-    ffmpegTest();
+    
 });
 
 $(document).keyup(function (e) {

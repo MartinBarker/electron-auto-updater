@@ -2,27 +2,32 @@
 <html>
 
 <head>
+
   <meta charset="UTF-8">
-  <title>digify</title>
-  <!-- css  -->
-  <link rel="stylesheet" href="./src/style2.css" />
+  <title>audio-archiver</title>
 
-
-  
   <script>window.$ = window.jQuery = require('jquery');</script>
   <script>require('popper.js');</script>
   <script>require('bootstrap');</script>
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="./src/static/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="./src/static/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./static/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./static/font-awesome/css/font-awesome.min.css">
   <!-- row reorder css -->
-  <link rel="stylesheet" href="./src/static/datatables/rowReorder.dataTables.min.css">
-  <link rel="stylesheet" href="./src/static/datatables/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="./static/datatables/rowReorder.dataTables.min.css">
+  <link rel="stylesheet" href="./static/datatables/jquery.dataTables.min.css">
+
+  <!--
+    <link rel="stylesheet" href="style.css" />
+
+    <script>require('electron-renderer');</script>
+    <script>require('./renderer.js')</script> 
+    <script src="./renderer.js"></script>-->
 
 </head>
 
 <body>
+
   <!-- frameless window titlebar -->
   <header style='z-index:2000 !important;' id="titlebar">
     <div id="drag-region">
@@ -58,9 +63,177 @@
     </div>
   </header>
 
+  <style>
+    /* Main content */
+    #main {
+      /* padding: 20px; */
+      height: 100%;
+      z-index: 10;
+      /* background: rgb(119,136,112); */
+      padding-top: 32px;
+      overflow-y: auto;
+    }
+
+    /* frameless window titlebar css */
+    #titlebar {
+      z-index: 99;
+      background: #525252f5;
+      color: black;
+      display: block;
+      position: fixed;
+      height: 32px;
+      width: calc(100%);
+    }
+
+    .maximized #titlebar {
+      width: 100%;
+      padding: 0;
+    }
+
+    #titlebar {
+      padding: 4px;
+    }
+
+    #titlebar #drag-region {
+      width: 100%;
+      height: 100%;
+      -webkit-app-region: drag;
+    }
+
+    #titlebar {
+      color: #FFF;
+    }
+
+    #titlebar #drag-region {
+      display: grid;
+      grid-template-columns: auto 138px;
+    }
+
+    #window-title {
+      grid-column: 1;
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+      overflow: hidden;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 100%;
+
+    }
+
+    .maximized #window-title {
+      margin-left: 12px;
+    }
+
+    #window-title span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.5;
+    }
+
+    #window-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 46px);
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+    }
+
+    #window-controls {
+      -webkit-app-region: no-drag;
+    }
+
+    #window-controls .button {
+      grid-row: 1 / span 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (-webkit-device-pixel-ratio: 1.5),
+    (device-pixel-ratio: 1.5),
+    (-webkit-device-pixel-ratio: 2),
+    (device-pixel-ratio: 2),
+    (-webkit-device-pixel-ratio: 3),
+    (device-pixel-ratio: 3) {
+      #window-controls .icon {
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    #window-controls .button {
+      user-select: none;
+    }
+
+    #window-controls .button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    #window-controls .button:active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    #close-button:hover {
+      background: #E81123 !important;
+    }
+
+    #close-button:active {
+      background: #F1707A !important;
+    }
+
+    #close-button:active .icon {
+      filter: invert(1);
+    }
+
+    #min-button {
+      grid-column: 1;
+    }
+
+    #max-button,
+    #restore-button {
+      grid-column: 2;
+    }
+
+    #close-button {
+      grid-column: 3;
+    }
+
+    #restore-button {
+      display: none !important;
+    }
+
+    .maximized #restore-button {
+      display: flex !important;
+    }
+
+    .maximized #max-button {
+      display: none;
+    }
+
+    /* auto update message popup css */
+    #notification {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 200px;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: white;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+
   <!-- main page content-->
   <div id='main'>
-
+    
 
     <!-- navbar -->
     <ul>
@@ -92,9 +265,9 @@
 
     <!-- upload list container -->
     <br>
-    <div id='uploadList'></div>
+    <div id='uploadList'>
 
-    
+    </div>
 
     <!-- new upload modal -->
     <div class="modal" id="uploadModal">
@@ -186,7 +359,7 @@
           <!-- Modal body -->
           <div class="modal-body">
             Created by Martin Barker 2020 <br>
-            <p id="version"></p> <br>
+            version 1.0 <br>
             martinbarker99@gmail.com <br>
             <strong>
               <h3>How to use:</h3>
@@ -252,9 +425,11 @@
 
   </div>
 
-  
 
-  
+
+</body>
+
+
 <style>
   body {
     margin-bottom: 30px;
@@ -433,70 +608,7 @@
 
   </script>
 
-  <!-- new upload modal -->
-  <div class="modal" id="uploadModal" style="padding-top:35px;">
-    <div class="modal-dialog">
-      <div class="modal-content" id='newUploadFilesInput'>
-
-        <!-- Modal Header -->
-        <div class="modal-header ">
-          <h4 class="modal-title">Create new upload</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-
-        <!-- Modal body -->
-        <div class="modal-body">
-
-          <!-- datatable of audio/img files -->
-          <table id="example" class="table table-striped table-bordered" style="width:100%"></table>
-          <!--
-          <table id="example" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start date</th>
-                    <th>Salary</th>
-                </tr>
-            </thead>
-            <tbody>
-            -->
 
 
-
-          <form>
-            <div>Upload multiple files by dragging them into this box or <label style='display: inline-block;'
-                class="uploadbutton" for="fileElem">Choose Files</label> </div>
-            <input type="file" id="fileElem" multiple onchange="handleFiles(this.files)">
-            <div id="gallery"></div>
-          </form>
-
-          <div id='newUploadFilesDisplay'>
-
-          </div>
-
-        </div>
-
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button style='display:inline' type="button" class="float-right btn btn-danger"
-            data-dismiss="modal">Cancel</button>
-
-          <button style='display:inline' id='createUploadButton' type="button" class="float-left btn btn-success"
-            data-dismiss="modal"
-            onclick="addNewUpload(document.getElementById('modalUploadTitleInput').value)">Create</button>
-
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- load digify script 
-  <script src="./src/index.js"></script> -->
-
-</body>
 
 </html>
