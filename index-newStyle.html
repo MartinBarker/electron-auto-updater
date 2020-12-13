@@ -62,7 +62,7 @@
     <!-- sidebar -->
     <div class="sidenav">
       <a href="#Settings" onclick="changePage()"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> Settings</a>
-      <a href="#Record"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> New Project</a>
+      <a class="active" href="#Record"><i class="fa fa-plus fa-fw" aria-hidden="true"></i> New Project</a>
       <!--
       <a href="#Render"><i class="fa fa-video-camera fa-fw" aria-hidden="true"></i> Render</a>
       <a href="#Upload"><i class="fa fa-upload fa-fw" aria-hidden="true"></i> Upload</a>
@@ -70,8 +70,64 @@
     </div>
 
     <div class="main">
-      <h2>Sidebar Dropdown</h2>
       <p id="version"></p>
+
+      <div class="modal-content" id='newUploadFilesInput'>
+
+        <!-- Modal Header -->
+        <div class="modal-header ">
+          <h4 class="modal-title">Create new upload</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+
+          <!-- datatable of audio/img files -->
+          <table id="example" class="table table-striped table-bordered" style="width:100%"></table>
+          <!--
+          <table id="example" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Age</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+            -->
+
+
+
+          <form>
+            <div>Upload multiple files by dragging them into this box or <label style='display: inline-block;'
+                class="uploadbutton" for="fileElem">Choose Files</label> </div>
+            <input type="file" id="fileElem" multiple onchange="handleFiles(this.files)">
+            <div id="gallery"></div>
+          </form>
+
+          <div id='newUploadFilesDisplay'>
+
+          </div>
+
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button style='display:inline' type="button" class="float-right btn btn-danger"
+            data-dismiss="modal">Cancel</button>
+
+          <button style='display:inline' id='createUploadButton' type="button" class="float-left btn btn-success"
+            data-dismiss="modal"
+            onclick="addNewUpload(document.getElementById('modalUploadTitleInput').value)">Create</button>
+
+        </div>
+
+      </div>
+
     </div>
 
   </div>

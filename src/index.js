@@ -14,7 +14,7 @@ async function ffmpegTest() {
     let padding = null;
     let backgroundImg = null;
     let vidOutput = `${vidFolderPath}${path.sep}${vidTitle}.${vidFileFormat}`;
-    generateVid(audioPath2, imgPath, vidOutput, resolution, padding, backgroundImg, null)
+    //generateVid(audioPath2, imgPath, vidOutput, resolution, padding, backgroundImg, null)
 
 };
 
