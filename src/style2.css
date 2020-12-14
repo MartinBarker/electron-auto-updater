@@ -1,6 +1,11 @@
 
+  #window-title-text{
+    padding-left:10px !important;
+  }
+  
   /* Fixed sidenav, full height */
   .sidenav {
+    padding-top:0px !important;
     height: 100%;
     width: 200px;
     position: fixed;
@@ -28,6 +33,17 @@
     outline: none;
   }
 
+  .active{
+    color: black !important;
+    background: #f1f1f1 !important;
+    text-decoration: none !important;
+  }
+  .active:hover{
+    color: black !important;
+    background: #f1f1f1 !important;
+    text-decoration: none !important;
+  }
+
   /* On mouse-over */
   .sidenav a:hover,
   .dropdown-btn:hover {
@@ -40,7 +56,7 @@
     /* padding: 20px; */
     height:100%;
     z-index:10;
-    background: rgb(119,136,112);
+    /* background: rgb(119,136,112); */
     padding-top: 32px;
     overflow-y: auto;
   }
@@ -99,7 +115,7 @@
   /* frameless window titlebar css */
   #titlebar {
     z-index: 99;
-    background: rgb(87, 87, 77);
+    background: #525252f5;
     color: black;
     display: block;
     position: fixed;
