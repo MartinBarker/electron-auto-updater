@@ -1,4 +1,4 @@
-let server = require('./app');
+//let server = require('./app');
 
 var newUploadFiles = {}
 

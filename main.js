@@ -20,16 +20,6 @@ function createWindow () {
   // Open the DevTools. 
   mainWindow.webContents.openDevTools() 
   
-  mainWindow.on('closed', function () {
-    mainWindow = null;
-  });
-
-  const express=require('express');
-  const expressApp = express();
-  expressApp.get('/uploadRequest', (req, res, next) =>   {
-    console.log('/uploadRequest route');
-  });
-
   mainWindow.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify();
   });
