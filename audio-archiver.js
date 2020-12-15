@@ -449,15 +449,19 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
         function generateResolutionOptions(uploadImageResolutions, imageName){
             var fullAlbumResolutionSelectionColHeader = document.createElement('select')
             fullAlbumResolutionSelectionColHeader.setAttribute('id', `upload_${uploadNumber}_fullAlbumResolutionChoice`)
-            fullAlbumResolutionSelectionColHeader.setAttribute('style', `max-width:150px; text-align: left;`)
-            console.log('generateResolutionOptions() uploadImageResolutions=', uploadImageResolutions, ', imageName=', imageName)
-            console.log('uploadImageResolutions[imageName].resolutions = ', uploadImageResolutions[imageName].resolutions)
+            fullAlbumResolutionSelectionColHeader.setAttribute('style', `max-width:150px; text-align: left;`);
+            let minAlreadySelected = false;
             for (var x = 0; x < uploadImageResolutions[imageName].resolutions.length; x++) {
                 var resOption = document.createElement('option')
                 resOption.setAttribute('value', `${imageName}`)
                 resOption.setAttribute('style', `width:150px; text-align: left;`)
                 resOption.innerHTML = `${uploadImageResolutions[imageName].resolutions[x]}`
                 fullAlbumResolutionSelectionColHeader.appendChild(resOption)
+                console.log('resolution width int = ', parseInt(`${uploadImageResolutions[imageName].resolutions[x]}`.split("x")[0]))
+                if(parseInt(`${uploadImageResolutions[imageName].resolutions[x]}`.split("x")[0]) >= 1920 && !minAlreadySelected){
+                    minAlreadySelected=true;
+                    resOption.setAttribute('selected', 'selected');
+                }
             }
             return fullAlbumResolutionSelectionColHeader;
         };
@@ -467,34 +471,20 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
             }
         }
 
-        //create full album resolution selection
-        var fullAlbumResolutionSelectionColHeader = document.createElement('select')
-        fullAlbumResolutionSelectionColHeader.setAttribute('id', `upload_${uploadNumber}_fullAlbumResolutionChoice`)
-        fullAlbumResolutionSelectionColHeader.setAttribute('style', `max-width:150px; text-align: left;`)
+        //generate resolutions for each image
         let uploadImageResolutions = await getResolutionOptions(uploadFiles.images);
-        try {
-            for (var x = 0; x < uploadImageResolutions[uploadFiles.images[0].name].resolutions.length; x++) {
-                var resOption = document.createElement('option')
-                resOption.setAttribute('value', `${uploadFiles.images[0].name}`)
-                resOption.setAttribute('style', `width:150px; text-align: left;`)
-                resOption.innerHTML = `${uploadImageResolutions[uploadFiles.images[0].name].resolutions[x]}`
-                fullAlbumResolutionSelectionColHeader.appendChild(resOption)
-            }
-        } catch (err) { }
-
+        //create div of resolutions based off the default selected image name
+        let resOptions = generateResolutionOptions(uploadImageResolutions, uploadFiles.images[0].name);
         //add full album resolution selection to upload_${uploadNumber}_fullAlbumResolutionChoiceDiv
-        document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(fullAlbumResolutionSelectionColHeader)
+        document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(resOptions)
 
         //if image selection changes, update resolution options
         $(`#upload_${uploadNumber}_fullAlbumImgChoice`).on('change', function() {
             let newImageNum =  $(this).val();
             let newImageName = uploadFiles.images[newImageNum].name;
-            console.log('newImageNum ', newImageNum);
-            console.log('newImageName: ', newImageName);
-           
-           let newResOptions = generateResolutionOptions(uploadImageResolutions, newImageName);
-
-            
+            //
+            let newResOptions = generateResolutionOptions(uploadImageResolutions, newImageName);
+    
             const container = document.querySelector(`#upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`);
             removeAllChildNodes(container);
            document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(newResOptions)
@@ -977,7 +967,7 @@ async function getResolutionOptions(images){
             //get width and height for image 
             let [width, height] = await getResolution(images[x].path);
             let resolutions = []; 
-            resolutions.push(`${width}_${height}`)
+            resolutions.push(`${width}x${height}`)
             //calculate 640wx480h SD
             let [res1_width, res1_height] = calculateResolution(width, height, 640);
             resolutions.push(`${res1_width}x${res1_height}`)
