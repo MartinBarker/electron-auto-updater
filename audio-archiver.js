@@ -1,5 +1,4 @@
 //let server = require('./app');
-
 var newUploadFiles = {}
 
 //display every upload in uploadList[]
@@ -365,9 +364,11 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
 
                         <div class="card ml-5 mr-5 mt-1 " >
                            <button id='upload_${uploadNumber}_fullAlbumButton'>Render Full Album Video</button>
-                            Full Album Img:<div id='upload_${uploadNumber}_fullAlbumImgChoiceDiv'> <strong><a style='float:right' id='upload_${uploadNumber}_fullAlbumStatus'></a></strong>
+                            <div>Full Album Img: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumImgChoiceDiv'></div> <strong><a style='float:right' id='upload_${uploadNumber}_fullAlbumStatus'></a></strong>
                            </div>
                                 <div>Num Tracks: <a id='upload_${uploadNumber}_numCheckedFullAlbum'>0</a></div>
+                                <div>Resolution: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumResolutionChoiceDiv'></div> </div>
+                                <div>Padding: </div>
                                 <div>Length: <a id='upload_${uploadNumber}_fullAlbumLength'>00:00</a></div>
                                 Tracklist:
                                 <div id='upload_${uploadNumber}_fullAlbumTracklist'>
@@ -430,19 +431,76 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                 var rowImg = document.createElement('option')
                 rowImg.setAttribute('value', x)
                 rowImg.setAttribute('style', `width:150px; text-align: left;`)
+                //img preview
+                rowImg.setAttribute("data-class", "avatar")
+                
                 rowImg.innerHTML = `${uploadFiles.images[x].name}`
                 fullAlbumImageSelectionColHeader.appendChild(rowImg)
             }
-        } catch (err) {
-
-        }
+        } catch (err) { }
         //add full album button img selection to upload_${uploadNumber}_fullAlbumImgChoiceDiv
         document.getElementById(`upload_${uploadNumber}_fullAlbumImgChoiceDiv`).appendChild(fullAlbumImageSelectionColHeader)
-        //prevent clicking full album img option from clicking full album button
-        document.getElementById(`upload_${uploadNumber}_fullAlbumImgChoice`).addEventListener("click", function (event) {
-            event.preventDefault()
-        });
 
+        //prevent clicking full album img option from clicking full album button
+        //document.getElementById(`upload_${uploadNumber}_fullAlbumImgChoice`).addEventListener("click", function (event) {
+        //    event.preventDefault()
+        //});
+
+        function generateResolutionOptions(uploadImageResolutions, imageName){
+            var fullAlbumResolutionSelectionColHeader = document.createElement('select')
+            fullAlbumResolutionSelectionColHeader.setAttribute('id', `upload_${uploadNumber}_fullAlbumResolutionChoice`)
+            fullAlbumResolutionSelectionColHeader.setAttribute('style', `max-width:150px; text-align: left;`)
+            console.log('generateResolutionOptions() uploadImageResolutions=', uploadImageResolutions, ', imageName=', imageName)
+            console.log('uploadImageResolutions[imageName].resolutions = ', uploadImageResolutions[imageName].resolutions)
+            for (var x = 0; x < uploadImageResolutions[imageName].resolutions.length; x++) {
+                var resOption = document.createElement('option')
+                resOption.setAttribute('value', `${imageName}`)
+                resOption.setAttribute('style', `width:150px; text-align: left;`)
+                resOption.innerHTML = `${uploadImageResolutions[imageName].resolutions[x]}`
+                fullAlbumResolutionSelectionColHeader.appendChild(resOption)
+            }
+            return fullAlbumResolutionSelectionColHeader;
+        };
+        function removeAllChildNodes(parent) {
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+        }
+
+        //create full album resolution selection
+        var fullAlbumResolutionSelectionColHeader = document.createElement('select')
+        fullAlbumResolutionSelectionColHeader.setAttribute('id', `upload_${uploadNumber}_fullAlbumResolutionChoice`)
+        fullAlbumResolutionSelectionColHeader.setAttribute('style', `max-width:150px; text-align: left;`)
+        let uploadImageResolutions = await getResolutionOptions(uploadFiles.images);
+        try {
+            for (var x = 0; x < uploadImageResolutions[uploadFiles.images[0].name].resolutions.length; x++) {
+                var resOption = document.createElement('option')
+                resOption.setAttribute('value', `${uploadFiles.images[0].name}`)
+                resOption.setAttribute('style', `width:150px; text-align: left;`)
+                resOption.innerHTML = `${uploadImageResolutions[uploadFiles.images[0].name].resolutions[x]}`
+                fullAlbumResolutionSelectionColHeader.appendChild(resOption)
+            }
+        } catch (err) { }
+
+        //add full album resolution selection to upload_${uploadNumber}_fullAlbumResolutionChoiceDiv
+        document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(fullAlbumResolutionSelectionColHeader)
+
+        //if image selection changes, update resolution options
+        $(`#upload_${uploadNumber}_fullAlbumImgChoice`).on('change', function() {
+            let newImageNum =  $(this).val();
+            let newImageName = uploadFiles.images[newImageNum].name;
+            console.log('newImageNum ', newImageNum);
+            console.log('newImageName: ', newImageName);
+           
+           let newResOptions = generateResolutionOptions(uploadImageResolutions, newImageName);
+
+            
+            const container = document.querySelector(`#upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`);
+            removeAllChildNodes(container);
+           document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(newResOptions)
+
+          
+        });
 
         //create dataset
         let data = await createDataset(uploadFiles, uploadNumber)
@@ -881,6 +939,65 @@ function deleteFile(path) {
 
 async function apiRouteTest() {
     console.log('api route')
+}
+
+async function getResolution(imagePath){
+    return new Promise(async function (resolve, reject) {
+        try{
+            var sizeOf = require('image-size');
+
+            sizeOf(imagePath, function (err, dimensions) {
+                if(!err){
+                    width=dimensions.width;
+                    height=dimensions.height
+                    resolve([width, height]);
+                }else{
+                    console.log('err getting img dimmensions:', err)
+                    reject(err)
+                }
+            });
+        }catch(err){
+            console.log('err getting dimmensions:', err)
+            reject(err)
+        }
+    });
+}
+
+function calculateResolution(oldWidth, oldHeight, newWidth){
+    let aspectRatio = oldWidth/oldHeight;
+    let newHeight = newWidth/aspectRatio
+    return([Math.round(newWidth), Math.round(newHeight)])
+}
+
+async function getResolutionOptions(images){
+    return new Promise(async function (resolve, reject) {
+        let returnVar = {};
+        
+        for(var x = 0; x < images.length; x++){
+            //get width and height for image 
+            let [width, height] = await getResolution(images[x].path);
+            let resolutions = []; 
+            resolutions.push(`${width}_${height}`)
+            //calculate 640wx480h SD
+            let [res1_width, res1_height] = calculateResolution(width, height, 640);
+            resolutions.push(`${res1_width}x${res1_height}`)
+            //calculate 1280x720 HD
+            let [res2_width, res2_height] = calculateResolution(width, height, 1280);
+            resolutions.push(`${res2_width}x${res2_height}`)
+            //calculate 1920x1080 HD
+            let [res3_width, res3_height] = calculateResolution(width, height, 1920);
+            resolutions.push(`${res3_width}x${res3_height}`)
+            //calculate 2560x1440 HD
+            let [res4_width, res4_height] = calculateResolution(width, height, 2560);
+            resolutions.push(`${res4_width}x${res4_height}`)
+
+            let temp = {
+                'resolutions':resolutions
+            }
+            returnVar[images[x].name] = temp;
+        }
+        resolve(returnVar)
+    });
 }
 
 //generate video using image and audio
