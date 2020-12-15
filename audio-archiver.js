@@ -452,13 +452,14 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
             fullAlbumResolutionSelectionColHeader.setAttribute('style', `max-width:150px; text-align: left;`);
             let minAlreadySelected = false;
             for (var x = 0; x < uploadImageResolutions[imageName].resolutions.length; x++) {
+                let resolution = `${uploadImageResolutions[imageName].resolutions[x]}`
                 var resOption = document.createElement('option')
                 resOption.setAttribute('value', `${imageName}`)
                 resOption.setAttribute('style', `width:150px; text-align: left;`)
-                resOption.innerHTML = `${uploadImageResolutions[imageName].resolutions[x]}`
+                resOption.innerHTML = resolution
                 fullAlbumResolutionSelectionColHeader.appendChild(resOption)
-                console.log('resolution width int = ', parseInt(`${uploadImageResolutions[imageName].resolutions[x]}`.split("x")[0]))
-                if(parseInt(`${uploadImageResolutions[imageName].resolutions[x]}`.split("x")[0]) >= 1920 && !minAlreadySelected){
+                //select 1920 hd result by default
+                if(parseInt(resolution.split("x")[0]) >= 1920 && !minAlreadySelected){
                     minAlreadySelected=true;
                     resOption.setAttribute('selected', 'selected');
                 }
