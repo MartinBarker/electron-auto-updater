@@ -325,7 +325,7 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                                     <th><input id='upload_${uploadNumber}_table-selectAll' type="checkbox"></th>
                                     <th>Audio</th>
                                     <th style='max-width:58px'>Length</th>
-                                    <th style='max-width:200px'>
+                                    <!-- <th style='max-width:200px'>
                                         <div>
                                             <label>Img:</label>
                                             <div id='upload_${uploadNumber}_table-image-col'></div>
@@ -339,7 +339,7 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                                                 <option value="1">avi</option>
                                             </select> 
                                         </div>
-                                    </th>
+                                    </th> -->
                                     <th>audioFilepath</th>
                                     <th>Track Num</th>
                                     <!--
@@ -354,6 +354,23 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                             </thead>
                         </table>
 
+                        <!-- image options -->
+                            <div>Image: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumImgChoiceDiv'></div> 
+                            
+
+                        <!-- padding option -->
+                        <div>Padding: 
+                            <select id='upload_${uploadNumber}_fullAlbumPaddingChoices'>
+                                <option value="none">None</option>
+                                <option value="white">White</option>
+                                <option value="black">Black</option>
+                            </select>
+                        </div>
+
+                        <!-- resolution options -->
+                        <div>Resolution: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumResolutionChoiceDiv'></div> </div>
+
+
                         <!-- Render Individual Button -->
                         <div class="card ml-5 mr-5 mt-1 renderOption" type='button' onclick="renderIndividual(${uploadNumber})">
                             <div class='card-body'>
@@ -362,27 +379,14 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                             </div>
                         </div>
 
+                        <!-- Render Full Album Button -->
                         <div class="card ml-5 mr-5 mt-1 " >
-                            <!-- full album button -->
                             <button id='upload_${uploadNumber}_fullAlbumButton'>Render Full Album Video</button>
 
                             <!-- float right render status -->
                             <strong><a style='float:right' id='upload_${uploadNumber}_fullAlbumStatus'></a></strong>
 
-                            <!-- image options -->
-                            <div>Image: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumImgChoiceDiv'></div> 
                             
-                            <!-- padding option -->
-                            <div>Padding: 
-                                <select id='upload_${uploadNumber}_fullAlbumPaddingChoices'>
-                                    <option value="none">None</option>
-                                    <option value="white">White</option>
-                                    <option value="black">Black</option>
-                                </select>
-                            </div>
-
-                            <!-- resolution options -->
-                            <div>Resolution: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumResolutionChoiceDiv'></div> </div>
 
                             <!-- length -->
                             <div>Length: <a id='upload_${uploadNumber}_fullAlbumLength'>00:00</a></div>
@@ -395,27 +399,6 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                             <div id='upload_${uploadNumber}_fullAlbumTracklist'></div>
 
                         </div>
-
-                        <!-- Render Full Album Button -
-                        <div class="card ml-5 mr-5 mt-1 renderOption">
-                            <div class='card-body' id='upload_${uploadNumber}_fullAlbumButton'>
-                                <div>
-                                    <i class="uploadIndividual fa fa-plus-circle" aria-hidden="true"></i>
-                                    Render a Full Album video <strong><a style='float:right' id='upload_${uploadNumber}_fullAlbumStatus'></a></strong>
-                                </div>
-                                
-                                </div>
-                                    <br>
-                                    Num Tracks: <a id='upload_${uploadNumber}_numCheckedFullAlbum'>0</a>
-                                    </br>
-                                    Length: <a id='upload_${uploadNumber}_fullAlbumLength'>00:00</a>
-                                    </br>
-                                    Tracklist:
-                                    <div id='upload_${uploadNumber}_fullAlbumTracklist'>
-                                </div>
-                                    
-                            </div>
-                        </div> -->
 
                     </div>
                 </div>
@@ -440,7 +423,7 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
 
         }
         //add image dropdown selection to table html
-        document.getElementById(`upload_${uploadNumber}_table-image-col`).appendChild(uploadImageSelectionColHeader)
+        //document.getElementById(`upload_${uploadNumber}_table-image-col`).appendChild(uploadImageSelectionColHeader)
 
         //create full album button image selection
         var fullAlbumImageSelectionColHeader = document.createElement('select')
@@ -581,8 +564,8 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                 { "data": "audio" },
                 //{ "data": "format" },
                 { "data": "length" },
-                { "data": "imgSelection" },
-                { "data": "outputFormat" },
+                //{ "data": "imgSelection" },
+                //{ "data": "outputFormat" },
                 { "data": "audioFilepath" },
                 { "data": "trackNum" }
             ],
@@ -620,6 +603,7 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                     targets: 4,
                     type: "string"
                 },
+                /*
                 { //image selection
                     targets: 5,
                     type: "string",
@@ -631,12 +615,13 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                     type: "string",
                     orderable: false
                 },
+                */
                 {//audioFilepath
-                    targets: 7,
+                    targets: 5,
                     visible: false,
                 },
                 {//trackNum
-                    targets: 8,
+                    targets: 6,
                     visible: true,
                 }
             ],
@@ -659,8 +644,8 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                 "audio": i.audio,
                 //"format": 'adasd',//i.format,
                 "length": i.length,
-                "imgSelection": i.imgSelection,
-                "outputFormat": i.vidFormatSelection,
+                //"imgSelection": i.imgSelection,
+                //"outputFormat": i.vidFormatSelection,
                 //"outputLocation": "temp output location",
                 "audioFilepath": i.audioFilepath,
                 "trackNum": i.trackNum,
@@ -689,10 +674,10 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
           */
 
         $(`#upload_${uploadNumber}_fullAlbumButton`).on('click', async function (e) {
-            //console.log('Begin Concat Audio Command')
-
-            fullAlbum(`upload-${uploadNumber}`, uploadNumber)
-
+            let resolution = $(`#upload_${uploadNumber}_fullAlbumResolutionChoice option:selected`).text(); 
+            resolution = (resolution.split(" ")[0]).trim()
+            let padding = ($(`#upload_${uploadNumber}_fullAlbumPaddingChoices`).val()).trim();
+            fullAlbum(`upload-${uploadNumber}`, uploadNumber, resolution, padding)
         })
 
 
@@ -893,21 +878,35 @@ async function renderIndividual(uploadNumber) {
     var path = require('path');
     var outputDir = path.dirname(selectedRows[0].audioFilepath)
 
+    //get padding
+    let padding = ($(`#upload_${uploadNumber}_fullAlbumPaddingChoices`).val()).trim();
+    //get resolution
+    let resolution = $(`#upload_${uploadNumber}_fullAlbumResolutionChoice option:selected`).text(); 
+    resolution = (resolution.split(" ")[0]).trim()
+    //get img input
+    var uploadList = await JSON.parse(localStorage.getItem('uploadList'))
+    var upload = uploadList[`upload-${uploadNumber}`]
+    let imgChoice = document.getElementById(`upload_${uploadNumber}_fullAlbumImgChoice`).value
+    let imgInput = upload.files.images[imgChoice].path
+
     //for each individual render
     for (var i = 0; i < selectedRows.length; i++) {
         //get song number:
         let songNum = (selectedRows[i].sequence) - 1
         //get img selection
-        let imgChoice = document.getElementById(`upload_${uploadNumber}_table-audio-${songNum}-img_choice`).value
-        let imgInput = upload.files.images[imgChoice].path
+        //let imgChoice = document.getElementById(`upload_${uploadNumber}_table-audio-${songNum}-img_choice`).value
+        //let imgInput = upload.files.images[imgChoice].path
         //get filetype selection
         //get audio filename without file extension/type at end
         let songName = selectedRows[i].audio.substr(0, selectedRows[i].audio.lastIndexOf("."));
         //get filepath for audio
         let audioFilepath = selectedRows[i].audioFilepath
         let last4chars = audioFilepath.substr(audioFilepath.length - 4);
+        console.log(`i=${i}, audioFilepath=${i}, last4chars=${last4chars}`)
         //if filetype = flac or m4a
         if (last4chars == 'flac' || last4chars == '.m4a') {
+            
+            console.log('i = ', i, ', combine mp3 , audioFilepath= ', audioFilepath)
             //convert to HQ mp3
             var timestamp = new Date().getUTCMilliseconds();
             audioFilepath = `${outputDir}${path.sep}${songName}-convertedAudio.mp3`
@@ -924,7 +923,7 @@ async function renderIndividual(uploadNumber) {
         //render vid
         let updateInfoLocation = `upload_${uploadNumber}_IndividualRenderStatus`
         document.getElementById(updateInfoLocation).innerHTML = ''
-        await generateVid(audioFilepath, imgInput, vidOutput, updateInfoLocation)
+        await generateVid(audioFilepath, imgInput, vidOutput, updateInfoLocation, resolution, padding)
 
         if (last4chars == 'flac' || last4chars == '.m4a') {
 
@@ -939,9 +938,8 @@ async function renderIndividual(uploadNumber) {
 }
 
 //render a full album upload
-async function fullAlbum(uploadName, uploadNumber) {
+async function fullAlbum(uploadName, uploadNumber, resolution, padding) {
     document.getElementById(`upload_${uploadNumber}_fullAlbumStatus`).innerText = 'Generating Audio: 0%'
-    console.log('fullAlbum()')
     //get table
     var table = $(`#upload_${uploadNumber}_table`).DataTable()
     //get all selected rows
@@ -952,7 +950,6 @@ async function fullAlbum(uploadName, uploadNumber) {
     //create outputfile
     var timestamp = new Date().getUTCMilliseconds();
     let outputFilepath = `${outputDir}${path.sep}output-${timestamp}.mp3`
-    console.log('fullAlbum() creating concatenated audio file')
     //create concat audio file
     await combineMp3FilesOrig(selectedRows, outputFilepath, '320k', timestamp, uploadNumber);
 
@@ -963,10 +960,8 @@ async function fullAlbum(uploadName, uploadNumber) {
     let imgInput = upload.files.images[imgChoice].path
 
     let vidOutput = `${outputDir}${path.sep}fullAlbum-${timestamp}.mp4`
-    //console.log('imgInput = ', imgInput)
     let updateInfoLocation = `upload_${uploadNumber}_fullAlbumStatus`
-    console.log('fullAlbum() generating vid')
-    await generateVid(outputFilepath, imgInput, vidOutput, updateInfoLocation)
+    await generateVid(outputFilepath, imgInput, vidOutput, updateInfoLocation, resolution, padding)
     //await generateVid(selectedRows[0].audioFilepath, imgInput, vidOutput, uploadNumber)
 
     console.log('fullAlbum() deleting temp fullalbumaudio file')
@@ -1058,9 +1053,9 @@ async function getResolutionOptions(images){
 }
 
 //generate video using image and audio
-async function generateVid(audioPath, imgPath, vidOutput, updateInfoLocation) {
+async function generateVid(audioPath, imgPath, vidOutput, updateInfoLocation, resolution, padding) {
     return new Promise(async function (resolve, reject) {
-        console.log('generateVid audioPath = ', audioPath, '\n imgPath = ', imgPath, '\n vidOutput = ', vidOutput)
+        console.log('generateVid \n audioPath = ', audioPath, ' \n \n imgPath = ', imgPath, ' \n \n vidOutput = ', vidOutput, `, \n \n resolution = [${resolution}], \n \n padding=${padding}`)
         if (updateInfoLocation) {
             console.log('updateInfoLocation found')
             document.getElementById(updateInfoLocation).innerText = `Generating Video: 0%`
@@ -1078,7 +1073,8 @@ async function generateVid(audioPath, imgPath, vidOutput, updateInfoLocation) {
         ffmpeg.setFfprobePath(ffprobePath);
         //end set ffmpeg info
 
-        ffmpeg()
+        if(padding != "none"){
+            ffmpeg()
             .input(imgPath)
             .loop()
             .addInputOption('-framerate 2')
@@ -1087,7 +1083,8 @@ async function generateVid(audioPath, imgPath, vidOutput, updateInfoLocation) {
             .audioCodec('copy')
             .audioBitrate('320k')
             .videoBitrate('8000k', true)
-            .size('1920x1080')
+            .size(resolution).autopad(padding)
+            
             .outputOptions([
                 '-preset medium',
                 '-tune stillimage',
@@ -1127,6 +1124,60 @@ async function generateVid(audioPath, imgPath, vidOutput, updateInfoLocation) {
                 reject(err);
             })
             .output(vidOutput).run()
+        }else{
+            ffmpeg()
+            .input(imgPath)
+            .loop()
+            .addInputOption('-framerate 2')
+            .input(audioPath)
+            .videoCodec('libx264')
+            .audioCodec('copy')
+            .audioBitrate('320k')
+            .videoBitrate('8000k', true)
+            .size(resolution)
+            
+            .outputOptions([
+                '-preset medium',
+                '-tune stillimage',
+                '-crf 18',
+                '-pix_fmt yuv420p',
+                '-shortest'
+            ])
+            //.size('50%')
+
+            .on('progress', function (progress) {
+                if (progress.percent) {
+                    if (updateInfoLocation) {
+                        document.getElementById(updateInfoLocation).innerText = `Generating Video: ${Math.round(progress.percent)}%`
+                    }
+                } else {
+                    if (updateInfoLocation) {
+                        document.getElementById(updateInfoLocation).innerText = `Generating Video...`
+                    }
+                }
+                console.info(`vid() Processing : ${progress.percent} % done`);
+            })
+            .on('codecData', function (data) {
+                console.log('vid() codecData=', data);
+            })
+            .on('end', function () {
+                if (updateInfoLocation) {
+                    document.getElementById(updateInfoLocation).innerText = `Video generated.`
+                }
+                console.log('vid()  file has been converted succesfully; resolve() promise');
+                resolve();
+            })
+            .on('error', function (err) {
+                if (updateInfoLocation) {
+                    document.getElementById(updateInfoLocation).innerText = `Error generating video.`
+                }
+                console.log('vid() an error happened: ' + err.message, ', reject()');
+                reject(err);
+            })
+            .output(vidOutput).run()
+        }
+
+
 
     })
 }
