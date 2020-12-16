@@ -363,16 +363,37 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
                         </div>
 
                         <div class="card ml-5 mr-5 mt-1 " >
-                           <button id='upload_${uploadNumber}_fullAlbumButton'>Render Full Album Video</button>
-                            <div>Full Album Img: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumImgChoiceDiv'></div> <strong><a style='float:right' id='upload_${uploadNumber}_fullAlbumStatus'></a></strong>
-                           </div>
-                                <div>Num Tracks: <a id='upload_${uploadNumber}_numCheckedFullAlbum'>0</a></div>
-                                <div>Resolution: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumResolutionChoiceDiv'></div> </div>
-                                <div>Padding: </div>
-                                <div>Length: <a id='upload_${uploadNumber}_fullAlbumLength'>00:00</a></div>
-                                Tracklist:
-                                <div id='upload_${uploadNumber}_fullAlbumTracklist'>
+                            <!-- full album button -->
+                            <button id='upload_${uploadNumber}_fullAlbumButton'>Render Full Album Video</button>
+
+                            <!-- float right render status -->
+                            <strong><a style='float:right' id='upload_${uploadNumber}_fullAlbumStatus'></a></strong>
+
+                            <!-- image options -->
+                            <div>Image: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumImgChoiceDiv'></div> 
+                            
+                            <!-- padding option -->
+                            <div>Padding: 
+                                <select id='upload_${uploadNumber}_fullAlbumPaddingChoices'>
+                                    <option value="none">None</option>
+                                    <option value="white">White</option>
+                                    <option value="black">Black</option>
+                                </select>
                             </div>
+
+                            <!-- resolution options -->
+                            <div>Resolution: <div style="display:inline;" id='upload_${uploadNumber}_fullAlbumResolutionChoiceDiv'></div> </div>
+
+                            <!-- length -->
+                            <div>Length: <a id='upload_${uploadNumber}_fullAlbumLength'>00:00</a></div>
+
+                            <!-- number of tracks -->
+                            <div>Num Tracks: <a id='upload_${uploadNumber}_numCheckedFullAlbum'>0</a></div>
+
+                            <!-- tracklist -->
+                            Tracklist:
+                            <div id='upload_${uploadNumber}_fullAlbumTracklist'></div>
+
                         </div>
 
                         <!-- Render Full Album Button -
@@ -447,6 +468,11 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
         //});
 
         function generateResolutionOptions(uploadImageResolutions, imageName){
+            if(uploadImageResolutions == null && imageName == null){
+                console.log('both null')
+                uploadImageResolutions = {'staticResolutions':{resolutions:['640x480', '1280x720', '1920x1080', '2560x1440', '2560x1600']}}
+                imageName = 'staticResolutions';
+            }
             var fullAlbumResolutionSelectionColHeader = document.createElement('select')
             fullAlbumResolutionSelectionColHeader.setAttribute('id', `upload_${uploadNumber}_fullAlbumResolutionChoice`)
             fullAlbumResolutionSelectionColHeader.setAttribute('style', `max-width:150px; text-align: left;`);
@@ -490,16 +516,45 @@ async function createNewUploadCard(uploadTitle, uploadNumber, uploadFiles) {
         //add full album resolution selection to upload_${uploadNumber}_fullAlbumResolutionChoiceDiv
         document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(resOptions)
 
+        //if padding option changes, update resolution options
+        $(`#upload_${uploadNumber}_fullAlbumPaddingChoices`).on('change', function() {
+            let paddingChoice =  $(this).val();
+            console.log('paddingChoice = ', paddingChoice)
+            //get image choice
+            let imageChoiceNum = $(`#upload_${uploadNumber}_fullAlbumImgChoice`).val();
+            let imageChoiceName = uploadFiles.images[imageChoiceNum].name;
+            console.log('img choice = ', imageChoiceName);
+            //generate new resolution options
+            let newResOptions = generateResolutionOptions(null, null);
+            //create new resolution div
+            const container = document.querySelector(`#upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`);
+            //remove all child nodes from resolutions div
+            removeAllChildNodes(container);
+            //append resolution options
+            document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(newResOptions)
+        });
+
         //if image selection changes, update resolution options
         $(`#upload_${uploadNumber}_fullAlbumImgChoice`).on('change', function() {
+            //get image info
             let newImageNum =  $(this).val();
             let newImageName = uploadFiles.images[newImageNum].name;
-            //
-            let newResOptions = generateResolutionOptions(uploadImageResolutions, newImageName);
-    
+            //get padding info
+            let paddingChoice =  $(`#upload_${uploadNumber}_fullAlbumPaddingChoices`).val();
+            console.log('img changed paddingChoice = ', paddingChoice)
+            //if padding is not 'none', generate dropdown with static resolutions
+            let newResOptions;
+            if(!paddingChoice.includes('none')){
+                newResOptions = generateResolutionOptions(null, null);
+            }else{
+                newResOptions = generateResolutionOptions(uploadImageResolutions, newImageName);
+            }
+            //create new resolution div
             const container = document.querySelector(`#upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`);
+            //remove all child nodes from resolutions div
             removeAllChildNodes(container);
-           document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(newResOptions)
+            //append resolution options
+            document.getElementById(`upload_${uploadNumber}_fullAlbumResolutionChoiceDiv`).appendChild(newResOptions)
 
           
         });
